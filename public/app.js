@@ -12,7 +12,9 @@ const config = {
 	currentTimeStart: 0,
 	currentTimeFinish: 0,
 	hideKeyboard: false,
-	selectTask: true,
+	isSelectTask: true,
+	isTryTask: false,
+	isEndTask: false,
 	taskList: [],
 	task: {
 		id: 0,
@@ -30,7 +32,7 @@ const config = {
 		lastTimePressed: 0,
 	},
 	maxChar: 20,
-	isShowMistake: false
+	isShowMistake: false,
 }
 
 const Main = {
@@ -38,13 +40,45 @@ const Main = {
 		return config;
 	},
 	created() {
-		fetch("/task")
+		fetch("task.php")
 			.then(response => response.json())
 			.then(data => {
-				this.taskList = data.sort((a, b) => +a.id - +b.id)
+				this.taskList = data;
 			});
 	},
 	methods: {
+		randomTask() {
+			fetch("https://baconipsum.com/api/?type=meat-and-filler&paras=1")
+				.then(response => response.json())
+				.then(task => {
+					if (task) {
+						this.startTask({
+							id: 999,
+							name: 'RandomText',
+							text: task[0],
+							level: 0,
+						});
+					}
+				});
+		},
+		selectTask() {
+			this.isSelectTask = true;
+			this.isEndTask = false;
+			this.isTryTask = false;
+		},
+		loadTask(id) {
+			if (id == 999) {
+				this.randomTask();
+				return;
+			}
+			fetch("task.php?type=task&id=" + id)
+				.then(response => response.json())
+				.then(task => {
+					if (task) {
+						this.startTask(task);
+					}
+				});
+		},
 		keyPress(event) {
 			// console.log(event);
 			let charCode = event.charCode;
@@ -130,14 +164,18 @@ const Main = {
 			// SpeedM
 			
 			this.progress++;
+			// Завершение задания
 			if (this.progress >= this.progressMax) {
-				this.endTask();
+				this.toEndTask();
+				return;
 			}
 		},
-		loadTask(task) {
+		startTask(task) {
 			this.task = task;
 			this.progress = 0;
-			this.selectTask = false;
+			this.isSelectTask = false;
+			this.isEndTask = false;
+			this.isTryTask = true;
 			this.prevText = '';
 			this.nextText = this.task.text.substring(this.progress, this.progress + this.maxChar);
 			this.stat.mistake = 0;
@@ -154,9 +192,6 @@ const Main = {
 				this.prevKeyId = lightKey(this.task.text[0], this.prevKeyId);
 			}, 500)
 		},
-		endTask() {
-			console.log('end');
-		},
 		updateMomentSpeed() {
 			if (this.progress < this.progressMax) {
 				if (this.progress) {
@@ -172,11 +207,37 @@ const Main = {
 				setTimeout(this.updateMomentSpeed, 200);
 			}
 		},
+		toEndTask() {
+			this.isSelectTask = false;
+			this.isTryTask = false;
+			this.isEndTask = true;
+
+
+			
+		},
 		flashMistake() {
 			this.isShowMistake = true;
 			setTimeout(() => {
 				this.isShowMistake = false;
 			}, 500);
+		},
+		msecToTime(mSec) {
+			let min = Math.floor(mSec / 60000);
+			let sec = Math.round((mSec - min * 60000) / 1000);
+			return ('0' + min).slice(-2) + ':' + ('0' + sec).slice(-2);
+		},
+		gradeResult(procent, speed) {
+			let grade = 2;
+
+			if (procent <= 0.009 && speed >= 150) {
+				return 5;
+			} else if (procent <= 0.019 && speed >= 140) {
+				return 4;
+			} else if (procent <= 0.029 && this.totalSpeed >= 100) {
+				return 3;
+			}
+
+			return grade;
 		}
 	},
 	computed: {
@@ -187,9 +248,7 @@ const Main = {
 			return this.progress / this.progressMax * 100;
 		},
 		allTime() {
-			let min = Math.floor(this.timeInterval / 60000);
-			let sec = Math.round((this.timeInterval - min * 60000) / 1000);
-			return ('0' + min).slice(-2) + ':' + ('0' + sec).slice(-2);
+			return this.msecToTime(this.timeInterval);
 		},
 		showMistake() {
 			var mod100 = this.stat.mistake % 100;
@@ -205,6 +264,28 @@ const Main = {
 		mistakeSignal() {
 			if (this.isShowMistake) {
 				return '1px solid red!important';
+			}
+		},
+		totalSpeed() {
+			return Math.floor(this.progress / (Date.now() - this.timeStart) * 60000);
+		},
+		procentMistake() {
+			return (this.stat.mistake / this.progressMax * 100).toFixed(2);
+		},
+		resultGrade() {
+			switch (this.gradeResult(this.procentMistake, this.totalSpeed)) {
+				case 2: {
+					return "Попробуйте ещё раз!";
+				}
+				case 3: {
+					return "Вы получили <span class='text-danger'>3</span>! Cегодня, быть может, вы никто...";
+				}
+				case 4: {
+					return "Поздравляем! Вы получили <span class='text-danger'>4</span>, но вы можете лучше.";
+				}
+				case 5: {
+					return "Поздравляем! Вы получили <span class='text-danger'>5</span>!";
+				}
 			}
 		}
 	}

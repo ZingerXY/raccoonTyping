@@ -12,14 +12,14 @@
 		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
 	</script>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/keyboard.css">
 </head>
 <body>
 	<nav class="navbar navbar-expand-md navbar-light bg-light mb-4">
 		<div class="container d-flex flex-wrap">
 			<a class="navbar-brand d-flex align-items-center" href="/">
-				<img src="/img/raccoon.png" height="50">
+				<img src="img/raccoon.png" height="50">
 				<strong>RaccoonTyping</strong>
 			</a>
 
@@ -28,15 +28,16 @@
 
 	<main id="main" class="container ">
 
-		<div v-if="selectTask" class="container">
+		<div v-if="isSelectTask" class="container">
 			<h2>Выберите упражнение:</h2>
 			<div class="d-flex flex-wrap justify-content-between">
-				<button class="btn btn-outline-dark m-1" v-for="task in taskList" @click="loadTask(task)">{{task.name}}</button>
+				<button class="btn btn-outline-dark m-1" v-for="task in taskList" @click="loadTask(task.id)">{{task.name}}</button>
+				<button class="btn btn-outline-dark m-1" @click="randomTask(task.id)">Random</button>
 			</div>
 			
 		</div>
 
-		<div v-else class="container">
+		<div v-if="isTryTask" class="container">
 			<div class="p-4">
 				<div>{{task.name}}</div>
 				<div>{{showMistake}}</div>
@@ -57,7 +58,8 @@
 			</div>
 
 			<div class="d-flex justify-content-center mb-2">
-				<button type="button" class="btn btn-outline-dark" @click="loadTask(task)">Рестарт</button>
+				<button type="button" class="btn btn-outline-dark m-1" @click="selectTask">К выбору заданий</button>
+				<button type="button" class="btn btn-outline-dark m-1" @click="loadTask(task.id)">Рестарт</button>
 			</div>
 
 			<div class="d-flex justify-content-center mb-2">
@@ -172,6 +174,46 @@
 					<div id='key_505' class='key key_alt_rgt'>Alt</div>
 					<div id='key_508' class='key key_ctrl_rgt'>Ctrl</div>
 				</div>
+			</div>
+		</div>
+
+		<div v-if="isEndTask">
+			<div id="report" class="d-flex flex-column align-items-center">
+				<h2 v-html="resultGrade"></h2>
+				<table class="table table-sm table-striped">
+					<tr>
+						<td scope="row">Общее время</td>
+						<td>{{ allTime }}</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td scope="row">Количество символов</td>
+						<td>{{ progressMax }}</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td scope="row">Скорость</td>
+						<td>{{ totalSpeed }}</td>
+						<td>симв/мин</td>
+					</tr>
+					<tr>
+						<td scope="row">Количество ошибок</td>
+						<td>{{ showMistake }}</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td scope="row">Процент ошибок</td>
+						<td>{{ procentMistake }}</td>
+						<td>%</td>
+					</tr>
+				</table>
+				<hr />
+
+			</div>
+
+			<div class="d-flex justify-content-center mb-2">
+				<button type="button" class="btn btn-outline-dark m-1" @click="selectTask">К выбору заданий</button>
+				<button type="button" class="btn btn-outline-dark m-1" @click="loadTask(task.id)">Пройти ещё раз</button>
 			</div>
 		</div>
 	</main>
