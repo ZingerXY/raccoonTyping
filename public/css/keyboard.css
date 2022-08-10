@@ -1,0 +1,141 @@
+/* keyboard */
+div.kb {
+  overflow: auto;
+  padding: 0;
+  font-size: 12pt;
+  font-family: Arial, Helvetica, sans-serif;
+  width: 580px;
+  float: center;
+}
+
+div.kb div.key {
+/*
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+*/
+  font-weight:bold;
+  border-radius: 6px;
+  position: relative;
+  background-color: #fff;
+  line-height: 25px;
+  border: 1px solid #777;
+  margin: 1px;
+  color: #444;
+  text-decoration: none;
+  display: block;
+  text-align: center;
+  outline: none;
+  float: left;
+  width: 35px;
+  height: 35px;
+}
+
+div.kb div.key_two {
+  line-height: 12px;
+  font-size: 9pt;
+}
+div.kb div.key_two div.key_top {
+  padding-left: 4px;
+  text-align: left;
+}
+div.kb div.key_two div.key_bottom {
+  padding-right: 4px;
+  text-align: right;
+}
+
+
+/*
+div.kb div.sep { clear: both; border: 0px;}
+*/
+
+div.kb div.key_back { width: 66px; }
+div.kb div.key_back_short { width: 30px; }
+div.kb div.key_tab { width: 58px; }
+div.kb div.key_backslash_rgt { width: 42px; }
+
+div.kb div.key_enter_down { 
+/*
+  -moz-border-bottom-right-radius: 0;
+  -webkit-bottom-right-border-radius: 0;
+  -khtml-bottom-right-border-radius: 0;
+*/
+  border-bottom-right-radius: 0;
+
+  width: 42px; 
+}
+div.kb div.key_enter_down_middle {
+  display: none;
+}
+div.kb div.key_enter_down_bottom { 
+/*
+  -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
+  -khtml-border-radius: 0 0 5px 5px;
+*/
+  border-radius: 0 0 6px 6px;
+
+  position: absolute;
+  top: 25px;
+  left: 7px;
+  width: 34px; 
+  height: 29px;
+  border: 1px solid #777;
+  border-top: 0;
+  background-color: #fff;
+}
+
+div.kb div.key_enter_up { 
+/*
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+  -khtml-border-radius: 5px 5px 0 0;
+*/
+  border-radius: 6px 6px 0 0;
+
+  width: 42px; 
+}
+div.kb div.key_enter_up_middle {
+  position: absolute;
+  top: 25px;
+  left: -1px;
+  width: 42px; 
+  height: 4px;
+  border-left: 1px solid #777;
+  border-right: 1px solid #777;
+  background-color: #fff;
+}
+div.kb div.key_enter_up_bottom { 
+/*
+  -moz-border-radius: 5px 0 5px 5px;
+  -webkit-border-radius: 5px 0 5px 5px;
+  -khtml-border-radius: 5px 0 5px 5px;
+*/
+  border-radius: 6px 0 6px 6px;
+
+  position: absolute;
+  top: 28px;
+  left: -23px;
+  width: 64px; 
+  height: 25px;
+  border: 1px solid #777;
+  background-color: #fff;
+}
+
+div.kb div.key_caps { width: 65px; }
+div.kb div.key_enter { width: 73px; }
+
+div.kb div.key_shift_lft { width: 35px; clear: left; }
+div.kb div.key_shift_lft_long { width: 80px; clear: left; }
+
+div.kb div.key_shift_rgt { width: 98px; }
+
+div.kb div.key_ctrl_lft { width: 42px; }
+div.kb div.key_alt_lft { width: 35px; margin-left: 39px; }
+div.kb div.key_space { width: 294px; background-color: rgb(255, 255, 255);}
+div.kb div.key_alt_rgt { width: 35px; }
+div.kb div.key_ctrl_rgt { width: 42px; margin-left: 57px; }
+
+
+
+
