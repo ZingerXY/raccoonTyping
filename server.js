@@ -10,13 +10,13 @@ class Application {
 
 	attachRoutes() {
 		let app = this.expressApp;
-		app.use(express.static('public'));
-		
 		let jsonParser = bodyParser.json();
 
 		app.get('/', this.root.bind(this));
 
-		app.get('/task', jsonParser, this.task.bind(this));
+		app.get('/task.php', jsonParser, this.task.bind(this));
+
+		app.use(express.static('public'));
 	}
 
 	/**
@@ -36,11 +36,30 @@ class Application {
 	 * @param {*} res 
 	 */
 	task(req, res) {
-		// console.log(req.query);
-		// res.send(req.query.id);
-		fs.readFile('./tasks.json', 'utf8', (err, data) => {
+		fs.readFile('./public/tasks.json', 'utf8', (err, data) => {
 			let taskList = JSON.parse(data);
-			res.json(taskList);
+			let result = [];
+			switch (req.query.type) {
+				case 'task': 
+					let task = taskList.filter(task => task.id == req.query.id).pop();
+					if (task) {
+						result = task;
+					}
+					break;
+				case 'tasks':
+					result = taskList;
+					break;
+				case 'names': 
+				default:
+					result = taskList.map(task => {
+						return {
+							id: task.id,
+							name: task.name
+						}
+					})
+					break;
+			}
+			res.json(result);
 		})
 	}
 }
